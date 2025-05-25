@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chúc Mừng Sinh Nhật</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #f9a8d4, #fef3c7);
+        overflow: hidden;
+      }
+      .paper {
+        position: relative;
+        width: 600px;
+        height: 400px;
+        background: #fff;
+        background-size: cover;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        animation: float 3s ease-in-out infinite;
+      }
+      .content {
+        width: 80%;
+        text-align: center;
+        font-family: "Arial", sans-serif;
+        font-size: 18px;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+        white-space: pre-wrap; /* Đảm bảo dấu cách và xuống dòng được giữ nguyên */
+      }
+      .content p {
+        margin: 0;
+      }
+      .char {
+        opacity: 0;
+        display: inline-block;
+        animation: type 0.1s forwards;
+      }
+      .space {
+        display: inline-block;
+        width: 0.3em; /* Độ rộng của dấu cách */
+      }
+      .gift-button {
+        display: none;
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-family: "Arial", sans-serif;
+        font-size: 16px;
+        color: #fff;
+        background-color: #f472b6;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        opacity: 0;
+        transition: opacity 0.5s ease, transform 0.3s ease;
+      }
+      .gift-button.show {
+        display: inline-block;
+        opacity: 1;
+      }
+      .gift-button:hover {
+        transform: scale(1.05);
+        background-color: #ec4899;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      @keyframes type {
+        to {
+          opacity: 1;
+        }
+      }
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #f472b6;
+        opacity: 0.8;
+        animation: fall 5s linear infinite;
+      }
+      @keyframes fall {
+        0% {
+          transform: translateY(-100vh) rotate(0deg);
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="paper">
+      <div class="content">
+        <p id="message"></p>
+      </div>
+      <a id="giftButton" class="gift-button" href="present.html">Nhận Quà</a>
+    </div>
+    <script>
+      const message =
+        "Chúc chị một ngày sinh nhật tuyệt vời, luôn luôn vui vẻ, mạnh khỏe và hạnh phúc. Mong mọi người nhiều bệnh cho chị mình có công ăn việc làm :)))). Chúc chị không phải chờ ai rất lâu, không phải đứng trước hiên nhà bố con thằng nào. Lời cuối chúc chị 83 86 mãi đỉnh, mãi đỉnh ^^.";
+      const messageElement = document.getElementById("message");
+      const giftButton = document.getElementById("giftButton");
+
+      // Tách nội dung thành từng ký tự và xử lý dấu cách
+      message.split("").forEach((char, index) => {
+        const span = document.createElement("span");
+        if (char === " ") {
+          span.className = "char space";
+        } else {
+          span.className = "char";
+          span.textContent = char;
+        }
+        span.style.animationDelay = `${index * 0.05}s`;
+        messageElement.appendChild(span);
+      });
+
+      // Hiển thị nút nhận quà sau khi hiệu ứng chữ hoàn tất
+      const totalTypingTime = message.length * 0.05 * 1000 + 2300; // Thời gian đánh chữ + 2.3s
+      setTimeout(() => {
+        giftButton.classList.add("show");
+      }, totalTypingTime);
+
+      // Hiệu ứng confetti
+      function createConfetti() {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.background = ["#f472b6", "#fff", "#f9a8d4", "#fed7aa"][
+          Math.floor(Math.random() * 4)
+        ];
+        confetti.style.animationDelay = Math.random() * 5 + "s";
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 5000);
+      }
+      setInterval(createConfetti, 200);
+    </script>
+  </body>
+</html>

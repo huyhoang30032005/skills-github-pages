@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        background: linear-gradient(
+          135deg,
+          #ffffff,
+          #ffe4e1
+        ); /* Gradient trắng đến hồng nhạt */
+        overflow: hidden;
+      }
+      video {
+        width: 100%;
+        max-width: 500px; /* Giới hạn chiều rộng để phù hợp video dọc */
+        max-height: 80vh; /* Giới hạn chiều cao để video dọc hiển thị trọn vẹn */
+        height: auto;
+        object-fit: contain; /* Đảm bảo video dọc không bị méo */
+        display: block;
+        transition: filter 0.5s ease; /* Hiệu ứng làm mờ mượt */
+        border: 3px solid #ff69b4; /* Viền hồng đậm */
+        border-radius: 10px; /* Bo góc viền */
+      }
+      .letter-container {
+        display: none; /* Ẩn ban đầu */
+        position: absolute; /* Đặt trên video */
+        top: 40%; /* Dịch lên để không che video dọc */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 10; /* Đặt trên video */
+        opacity: 0; /* Hiệu ứng fade-in */
+        transition: opacity 0.5s ease;
+      }
+      .letter-container img {
+        width: 100%;
+        max-width: 300px; /* Thu nhỏ bức thư để phù hợp video dọc */
+        height: auto;
+        border: 2px solid #ff69b4; /* Viền hồng */
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bóng đổ nhẹ */
+      }
+      .button-container {
+        display: none; /* Ẩn ban đầu */
+
+        position: absolute; /* Đặt trên video */
+        top: 60%; /* Đặt dưới bức thư, điều chỉnh cho video dọc */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 10; /* Đặt trên video */
+        opacity: 0; /* Hiệu ứng fade-in */
+        transition: opacity 0.5s ease;
+      }
+      button {
+        padding: 12px 24px;
+        margin: 8px;
+        font-size: 16px;
+        display: flex;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 11; /* Đặt trên bức thư */
+        margin-top: 150px;
+      }
+      button.receive {
+        background-color: #ff69b4; /* Màu hồng đậm */
+        color: white;
+      }
+      button.receive:hover {
+        background-color: #ff1493; /* Hồng đậm hơn khi hover */
+        transform: scale(1.05);
+      }
+      button.cancel {
+        background-color: #ffb6c1; /* Màu hồng nhạt */
+        color: white;
+        position: absolute; /* Để di chuyển nút */
+        transition: top 0.3s ease, left 0.3s ease, background-color 0.3s ease,
+          transform 0.2s ease; /* Hiệu ứng di chuyển mượt */
+      }
+      button.cancel:hover {
+        background-color: #ff8c94; /* Hồng nhạt hơn khi hover */
+        transform: scale(1.05);
+      }
+      @media (max-width: 600px) {
+        video {
+          max-width: 100%; /* Chiếm toàn chiều rộng trên điện thoại */
+          max-height: 70vh; /* Giới hạn chiều cao để chừa chỗ cho bức thư/nút */
+        }
+        .letter-container img {
+          max-width: 250px; /* Thu nhỏ bức thư trên điện thoại */
+        }
+        .letter-container {
+          top: 35%; /* Dịch lên thêm trên điện thoại */
+        }
+        .button-container {
+          top: 55%; /* Dịch nút lên trên điện thoại */
+        }
+        button {
+          padding: 10px 20px;
+          font-size: 14px; /* Thu nhỏ chữ trên điện thoại */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <video id="myVideo" controls>
+      <source src="Intro.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="letter-container" id="letterContainer">
+      <img src="letter.png" alt="Bức thư" />
+    </div>
+    <div class="button-container" id="buttonContainer">
+      <a href="card.html"
+        ><button class="receive" id="receiveButton">Mở thiệp</button></a
+      >
+    </div>
+
+    <script>
+      const video = document.getElementById("myVideo");
+      const letterContainer = document.getElementById("letterContainer");
+      const buttonContainer = document.getElementById("buttonContainer");
+      const cancelButton = document.getElementById("cancelButton");
+      const receiveButton = document.getElementById("receiveButton");
+
+      video.addEventListener("ended", () => {
+        video.style.filter = "blur(5px)"; /* Làm mờ video */
+        letterContainer.style.display = "block";
+        buttonContainer.style.display = "flex";
+        letterContainer.style.opacity = "1"; /* Fade-in bức thư */
+        buttonContainer.style.opacity = "1"; /* Fade-in nút */
+      });
+
+      cancelButton.addEventListener("click", () => {
+        // Tính toán kích thước vùng an toàn
+        const maxX = window.innerWidth - cancelButton.offsetWidth - 40; // Padding 40px
+        const maxY = window.innerHeight - cancelButton.offsetHeight - 40; // Padding 40px
+        const minX = 40; // Khoảng cách tối thiểu từ mép trái
+        const minY = 40; // Khoảng cách tối thiểu từ mép trên
+
+        // Lấy vị trí nút Nhận quà
+        const receiveRect = receiveButton.getBoundingClientRect();
+
+        let newX, newY;
+        do {
+          newX = Math.random() * (maxX - minX) + minX;
+          newY = Math.random() * (maxY - minY) + minY;
+        } while (
+          // Tránh vùng trung tâm (bức thư)
+          (newX > window.innerWidth * 0.4 &&
+            newX < window.innerWidth * 0.6 &&
+            newY > window.innerHeight * 0.3 &&
+            newY < window.innerHeight * 0.5) ||
+          // Tránh vùng nút Nhận quà
+          (newX > receiveRect.left - cancelButton.offsetWidth &&
+            newX < receiveRect.right &&
+            newY > receiveRect.top - cancelButton.offsetHeight &&
+            newY < receiveRect.bottom)
+        );
+
+        // Di chuyển nút đến vị trí ngẫu nhiên
+        cancelButton.style.position = "absolute";
+        cancelButton.style.left = `${newX}px`;
+        cancelButton.style.top = `${newY}px`;
+        cancelButton.style.transform = "none"; // Bỏ transform để không xung đột
+      });
+    </script>
+  </body>
+</html>
