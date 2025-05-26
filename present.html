@@ -7,28 +7,38 @@
     <style>
       body {
         margin: 0;
-        height: 100vh;
+        min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
         background: linear-gradient(135deg, #f9a8d4, #fef3c7);
-        overflow: hidden;
+        overflow-x: hidden;
         font-family: "Arial", sans-serif;
+        padding: 20px;
       }
+
       .container {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 20px;
+        width: 100%;
+        max-width: 1000px;
       }
+
       .video-row {
         display: flex;
+        flex-wrap: wrap;
         gap: 20px;
         justify-content: center;
+        width: 100%;
       }
+
       .video-container {
-        width: 300px;
-        height: 500px;
+        width: 90vw;
+        max-width: 300px;
+        height: 80vh;
+        max-height: 500px;
         background: #fff;
         border-radius: 15px;
         overflow: hidden;
@@ -40,11 +50,13 @@
         animation: bounce 2s ease-in-out infinite;
         transition: filter 0.5s ease;
       }
+
       video {
         width: 90%;
         height: 90%;
         object-fit: cover;
       }
+
       .video-frame {
         position: absolute;
         top: -8px;
@@ -53,11 +65,11 @@
         bottom: -8px;
         border: 3px solid transparent;
         border-radius: 18px;
-
         background-size: 400%;
         animation: gradient 5s ease infinite;
         transition: filter 0.5s ease;
       }
+
       .sparkle {
         position: absolute;
         width: 8px;
@@ -69,6 +81,7 @@
         animation: sparkle 1.5s ease-in-out infinite;
         transition: filter 0.5s ease;
       }
+
       .more-gift-button {
         display: none;
         padding: 10px 20px;
@@ -82,15 +95,20 @@
         text-decoration: none;
         opacity: 0;
         transition: opacity 0.5s ease, transform 0.3s ease;
+        margin-top: 20px;
+        max-width: 80%;
       }
+
       .more-gift-button.show {
         display: inline-block;
         opacity: 1;
       }
+
       .more-gift-button:hover {
         transform: scale(1.05);
         background-color: #ec4899;
       }
+
       .message {
         display: none;
         position: absolute;
@@ -104,12 +122,15 @@
         opacity: 0;
         animation: fadeIn 1s forwards;
       }
+
       .message.show {
         display: block;
       }
+
       .blur {
         filter: blur(5px);
       }
+
       @keyframes bounce {
         0%,
         100% {
@@ -119,6 +140,7 @@
           transform: scale(1.03);
         }
       }
+
       @keyframes gradient {
         0% {
           background-position: 0% 50%;
@@ -130,6 +152,7 @@
           background-position: 0% 50%;
         }
       }
+
       @keyframes sparkle {
         0% {
           opacity: 0;
@@ -144,9 +167,17 @@
           transform: scale(0);
         }
       }
+
       @keyframes fadeIn {
         to {
           opacity: 1;
+        }
+      }
+
+      /* Responsive font size cho màn hình nhỏ */
+      @media (max-width: 600px) {
+        .message {
+          font-size: 36px;
         }
       }
     </style>
@@ -156,8 +187,10 @@
       <source src="happy-birthday-254480.mp3" type="audio/mp3" />
       Trình duyệt của bạn không hỗ trợ âm thanh.
     </audio>
+
     <div class="container">
       <div class="video-row">
+        <!-- Video 1 -->
         <div class="video-container">
           <video id="giftVideo1" muted playsinline preload="auto">
             <source src="gift3.mp4" type="video/mp4" />
@@ -185,6 +218,8 @@
             style="top: 50%; left: 5%; animation-delay: 1.2s"
           ></div>
         </div>
+
+        <!-- Video 2 -->
         <div class="video-container">
           <video id="giftVideo2" muted playsinline preload="auto">
             <source src="gift2.mp4" type="video/mp4" />
@@ -213,9 +248,15 @@
           ></div>
         </div>
       </div>
+
+      <!-- Nút thêm quà -->
       <button id="moreGiftButton" class="more-gift-button">Thêm Quà</button>
     </div>
+
+    <!-- Lời nhắn -->
     <div id="message" class="message">Hết rồi chỉ có thế thôi ^^</div>
+
+    <!-- Script -->
     <script>
       const video1 = document.getElementById("giftVideo1");
       const video2 = document.getElementById("giftVideo2");
@@ -227,10 +268,8 @@
       let video1Ended = false;
       let video2Ended = false;
 
-      // Thử phát nhạc ngay khi trang tải
       function playMusic() {
         backgroundMusic.play().catch(() => {
-          // Nếu autoplay bị chặn, phát nhạc khi nhấp chuột bất kỳ
           document.body.addEventListener(
             "click",
             () => {
@@ -241,45 +280,39 @@
         });
       }
 
-      // Phát nhạc ngay lập tức
       playMusic();
 
-      // Phát video sau 1 giây để ưu tiên nhạc
       setTimeout(() => {
         video1.play();
         video2.play();
       }, 1000);
 
-      // Kiểm tra khi cả hai video kết thúc
       function checkBothVideosEnded() {
         if (video1Ended && video2Ended) {
           moreGiftButton.classList.add("show");
         }
       }
 
-      // Sự kiện khi video 1 kết thúc
       video1.addEventListener("ended", () => {
         video1Ended = true;
         checkBothVideosEnded();
       });
 
-      // Sự kiện khi video 2 kết thúc
       video2.addEventListener("ended", () => {
         video2Ended = true;
         checkBothVideosEnded();
       });
 
-      // Xử lý sự kiện nhấn nút "Thêm Quà"
       moreGiftButton.addEventListener("click", () => {
         message.classList.add("show");
         videoContainers.forEach((container) => container.classList.add("blur"));
         moreGiftButton.classList.add("blur");
-        const sparkles = document.querySelectorAll(".sparkle");
-        sparkles.forEach((sparkle) => sparkle.classList.add("blur"));
-        backgroundMusic.pause(); // Dừng nhạc nền
+        document
+          .querySelectorAll(".sparkle")
+          .forEach((s) => s.classList.add("blur"));
+        backgroundMusic.pause();
       });
 
-      // Tạo hiệu ứng lấp lánh ngẫu nhiên cho mỗi khung video
       function createSparkle(container) {
         const sparkle = document.createElement("div");
         sparkle.className = "sparkle";
